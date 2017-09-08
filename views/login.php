@@ -11,10 +11,12 @@
 
             <form class="form-signin">
                 <h2 class="form-signin-heading">Einloggen</h2>
-                <label for="inputEmail" class="sr-only">Email Adresse</label>
-                <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-                <label for="inputPassword" class="sr-only">Passwort</label>
-                <input type="password" id="inputPassword" class="form-control" placeholder="Passwort" required>
+                <div class="form-group has-Error">
+                    <label for="inputEmail" class="sr-only">Email Adresse</label>
+                    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+                    <label for="inputPassword" class="sr-only">Passwort</label>
+                    <input type="password" id="inputPassword" class="form-control" placeholder="Passwort" required>
+                </div>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Einloggen</button>
                 <p>
                     Noch nicht angemeldet?
