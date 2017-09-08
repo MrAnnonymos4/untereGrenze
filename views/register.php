@@ -20,7 +20,7 @@
                 $result = $connection->query($sql);
                 $_SESSION["name"] = $name;
                 $_SESSION["email"] = $mail;
-                $_SESSION["id"] = $connection->insert_id;
+                $_SESSION["userId"] = $connection->insert_id;
                 //header("Location: http://google.de");
                 //die();
             } else {
