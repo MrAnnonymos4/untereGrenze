@@ -1,19 +1,3 @@
-<?php
-    session_start();
-    require("../model/user.php");
-    $email = $_POST["email"];
-    if (isset($email)) {
-        $userId = checkUserMailAndPassword($email, $_POST["password"]);
-        if ($userId > -1) {
-            $_SESSION["userId"] = $userId;
-            echo "success";
-            header("Location: http://localhost:8888/Planning%20Poker/untereGrenze/index.html");
-            die();
-        }
-    } 
-?>
-
-
 <!DOCTYPE html>
 
 <?php
@@ -57,19 +41,11 @@
     </head>
     <body>
         <div class="container">
-<<<<<<< HEAD
-=======
-
->>>>>>> dbde02583b08b00f1338e17428aa09aeffabfe85
             <form class="form-signin" method="post" action="login.php">
                 <h2 class="form-signin-heading">Einloggen</h2>
                 <div class="form-group has-Error">
                     <label for="inputEmail" class="sr-only">Email Adresse</label>
-<<<<<<< HEAD
                     <input type="email" id="inputEmail" class="form-control" placeholder="Email Addresse" name="email" required autofocus>
-=======
-                    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" name="email" required autofocus>
->>>>>>> dbde02583b08b00f1338e17428aa09aeffabfe85
                     <label for="inputPassword" class="sr-only">Passwort</label>
                     <input type="password" id="inputPassword" class="form-control" placeholder="Passwort" name="password" required>
                 </div>

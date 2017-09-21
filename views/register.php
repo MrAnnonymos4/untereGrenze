@@ -1,4 +1,4 @@
-<?php
+﻿<?php
     session_start();
     if (isset($_POST["email"])) {
     	$mail = $_POST["email"];
@@ -20,24 +20,16 @@
            $showPasswordError = true;
         } else {
             include("../database/databaseConnection.php");
-            connectDB();
+            $connection = connectDB();
             $sql = "SELECT * FROM user WHERE email = '$mail'";
             $result = $connection->query($sql);
             
             if ($result->num_rows == 0) {
                 $sql = "INSERT INTO user (name, email, password) VALUES ('$name', '$mail', '$firstPassword')";
                 $result = $connection->query($sql);
-<<<<<<< HEAD
                 $_SESSION["id"] = $connection->insert_id;
                 header("Location: ../index.html");
                 die();
-=======
-                $_SESSION["name"] = $name;
-                $_SESSION["email"] = $mail;
-                $_SESSION["userId"] = $connection->insert_id;
-                //header("Location: http://google.de");
-                //die();
->>>>>>> dbde02583b08b00f1338e17428aa09aeffabfe85
             } else {
                 $showEmailError = true;
             }
