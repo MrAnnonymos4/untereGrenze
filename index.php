@@ -1,5 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="de">
+
+<?php
+	session_start();
+	if(!isset($_SESSION['userId']) || !empty($_SESSION['userId'])) {
+		header("Location: views/login.php");
+		die();
+	}
+?>
 
 <head>
 
@@ -58,7 +66,7 @@
                         <a href="#">Abgeschlossene Spiele</a>
                     </li>
                     
-                    <li><a class="btn btn-default" href="loggedOut.html">Abmelden</a></li>
+                    <li><a class="btn btn-default" href="loggedOut.php">Abmelden</a></li>
                     
 
                 </ul>
@@ -113,6 +121,7 @@
                 	</tr>
                 
                 </table>
+</div>
         <!-- /.row -->
                 <div class="row">
         <h2>Ihre Abgeschlossenen Spiele:</h2>

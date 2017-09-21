@@ -1,9 +1,17 @@
 <?php
     session_start();
-    $mail = $_POST["email"];
-    $name = $_POST["name"];
-    $firstPassword = $_POST["firstPassword"];
-    $secondPassword = $_POST["secondPassword"];
+    if (isset($_POST["email"])) {
+    	$mail = $_POST["email"];
+    }
+    if (isset($_POST["name"])) {
+    	$name = $_POST["name"];
+    }
+    if (isset($_POST["firstPassword"])) {
+    	$firstPassword = $_POST["firstPassword"];
+    }
+    if (isset($_POST["secondPassword"])) {
+    	$secondPassword = $_POST["secondPassword"];
+    }
     
     $showPasswordError = false;
     $showEmailError = false;
@@ -12,17 +20,16 @@
            $showPasswordError = true;
         } else {
             include("../database/databaseConnection.php");
+            connectDB();
             $sql = "SELECT * FROM user WHERE email = '$mail'";
             $result = $connection->query($sql);
             
             if ($result->num_rows == 0) {
                 $sql = "INSERT INTO user (name, email, password) VALUES ('$name', '$mail', '$firstPassword')";
                 $result = $connection->query($sql);
-                $_SESSION["name"] = $name;
-                $_SESSION["email"] = $mail;
                 $_SESSION["id"] = $connection->insert_id;
-                //header("Location: http://google.de");
-                //die();
+                header("Location: ../index.html");
+                die();
             } else {
                 $showEmailError = true;
             }
