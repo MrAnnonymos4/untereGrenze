@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-
 <?php
 	session_start();
 	if (isset($_POST["email"])) {
@@ -7,31 +5,27 @@
 	}
 	if (isset($_POST["password"])) {
 		$password = $_POST["password"];
-		echo "Password: $password <br />";
+		//echo "Password: $password <br />";
 	}
-	
 	if (isset($email) && isset($password)) {
-		include("../database/databaseConnection.php");
-		$connection = connectDB();
-		echo "Password: $password <br />";
-		$sql = "SELECT * FROM user WHERE email = '$email' AND password = '$password'";
-		echo $sql;
-		$result = $connection->query($sql);
 		
-		if ($result->num_rows == 1) {
-			while($row = $result->fetch_assoc()) {
-				$_SESSION["userId"] = $connection->insert_id;
-				header("Location: ../index.php");
-				die();
-			}
+		include("../model/user.php");
+        $result = checkUserMailAndPassword($email, $password);
+		if ($result > -1) {
+			$userId = $result;
+			$_SESSION["userId"] = $userId;
+			echo "Weiterleitung funktioniert nicht";
+            header("Location: ../index.php");
+            echo "<br /><a href='../index.php'>Weiter</a>";
+            exit();
 		} else {
-			//FEHLER!!!!!
+			echo "Wrong Credentials - Result: $result";
 		}
 	}
 
 
 ?>
-
+<!DOCTYPE html>
 <html lang="de">
     <head>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
