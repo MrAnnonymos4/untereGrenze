@@ -1,14 +1,15 @@
-﻿<!DOCTYPE html>
-<html lang="de">
-
-<?php
-	session_start();
-	if(!isset($_SESSION['userId']) || !empty($_SESSION['userId'])) {
-		header("Location: views/login.php");
-		die();
+﻿<?php
+    session_start();
+    include_once("database/databaseConnection.php");
+    echo("userId = " . $_SESSION["userId"] . "<br />");
+	if(!isset($_SESSION['userId']) || empty($_SESSION['userId'])) {
+        echo "<a href='views/login.php'>please log in</a>";
+        header("Location: views/login.php");
+		exit();
 	}
 ?>
-
+<!DOCTYPE html>
+<html lang="de">
 <head>
 
     <meta charset="utf-8">
@@ -31,6 +32,11 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script>jQuery(document).ready(function($) {
+    $(".clickable-row").click(function() {
+        window.location = $(this).data("href");
+    });
+});</script>
 
 </head>
 
@@ -55,7 +61,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#">Angefangene Spiele</a>
+                        <a href="#">Nicht Abgeschlossene Spiele</a>
                     </li>
                     
                     <li>
@@ -94,50 +100,66 @@
         <hr>
         <!-- Content Row -->
         <div class="row">
-        <h2>Ihre Angefangenen Spiele</h2>
-        <p>Hier können Sie die Spiele sehen die sie bereits angenommen haben, aber welche noch nicht abgeschlossen sind.</p>
-            <table id="table" class="table table-striped">
-                	<tr>
-                		<th>Name</th>
-                		<th>Projektleiter</th>
-                		<th>Datum</th>
-                		<th>Status</th>
-                	</tr>
-                
+            <h2>Nicht Abgeschlossene Spiele</h2>
+            <p>Hier können Sie die Spiele sehen die sie bereits angenommen haben, aber welche noch nicht abgeschlossen sind.</p>
+                <table id="table" class="table table-striped">
+                    <tr>
+                        <th>Name</th>
+                        <th>Projektleiter</th>
+                        <th>Status</th>
+                    </tr>
+                    <?php
+                        
+                        require_once("model/task.php");
+                        $theIds = getAllIdsOfTable("task");
+                        foreach($theIds AS $eachId) {
+                            
+                            $taskName = nameOfTaskWithId($eachId);
+                            $creatorName = creatorNameOfTaskWithId($eachId);
+                            $statusName = statusNameForTaskWithId($eachId);;
+
+                            echo "<tr onclick=\"window.document.location='#'\">
+                                <td><a href='google.de'>$taskName</a></td>
+                                <td>$creatorName</td>
+                                <td>$statusName</td>
+                            </tr>";
+                        }
+                    ?>
                 </table>
-            <!-- /.col-md-4 -->
+                <!-- /.col-md-4 -->
+            </div>
+            <!-- /.row -->
+                    <div class="row">
+            <h2>Ihre Einladungen:</h2>
+            <p>Das ist die Tabelle die Ihnen anzeigt welche Spieler sie eingeladen haben.</p>
+            <table id="table" class="table table-striped">
+                <tr>
+                    <th>Name</th>
+                    <th>Projektleiter</th>
+                    <th>Status</th>
+                </tr>
+                <?php
+                    require_once("model/invitation.php");
+                    $theIds = getAllIdsOfTable("invitation");
+                    foreach ($theIds AS $eachId) {
+                        $taskName = taskNameOfInivitationWithId($eachId);
+                        $creatorName = creatorNameOfInvitationWithId($eachId);
+                        $statusName = statusNameForInvitationWithId($eachId);
+                        if ($statusNumber == 0) {
+                            $statusHtmlString = "<button class='btn btn-success'>annehmen</button><button class='btn btn-danger'>ablehnen</button>";
+                        } else {
+                            $statusHtmlString = statusNumberForInvitationWithId($eachId);
+                        }
+                        echo "<tr>
+                            <td>$taskName</td>
+                            <td>$creatorName</td>
+                            <td>$statusHtmlString</td>
+                        </tr>";
+                    }
+                ?>
+            </table>
         </div>
-        <!-- /.row -->
-                <div class="row">
-        <h2>Ihre Einladungen:</h2>
-        <p>Das ist die Tabelle die Ihnen anzeigt welche Spieler sie eingeladen haben.</p>
-            <table id="table" class="table table-striped">
-                	<tr>
-                		<th>Name</th>
-                		<th>Projektleiter</th>
-                		<th>Datum</th>
-                		<th>Zusagen</th>
-                		<th>Absagen</th>
-                	</tr>
-                
-                </table>
-</div>
-        <!-- /.row -->
-                <div class="row">
-        <h2>Ihre Abgeschlossenen Spiele:</h2>
-        <p>Diese Tabelle zeigt Ihnen welche Spiele sie bereits abgeschlossen haben, und welches Ergebnis jeweils dabei herauskam.</p>
-            <table id="table" class="table table-striped">
-                	<tr>
-                		<th>Name</th>
-                		<th>Projektleiter</th>
-                		<th>Datum</th>
-                		<th>Wert</th>
-                		<th>Einheit</th>
-                	</tr>
-                	
-                </table>
-            <!-- /.col-md-4 -->
-        </div>
+
 
         <!-- Footer -->
         <footer>
