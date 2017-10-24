@@ -31,4 +31,15 @@
         include_once("../database/databaseConnection.php");
         return getColumnOfRowWithIdInTable("status", $id, "invitation");
     }
+
+    function voteForInvitationWithId($id) {
+        include_once("../database/databaseConnection.php");
+        return getColumnOfRowWithIdInTable("vote", $id, "invitation");
+    }
+
+    function createInvitation($taskId, $userId) {
+        include_once("../database/databaseConnection.php");
+        $sql = "INSERT INTO invitation (taskId, playerId) VALUES ($taskId, $userId)";
+        sendQuery($sql);
+    }
 ?>

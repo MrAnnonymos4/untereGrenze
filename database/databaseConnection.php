@@ -33,11 +33,12 @@
         $sql = "SELECT id FROM $tableName WHERE $conditionString";
         $connection = connectDb();
         $queryResult = $connection->query($sql);
-        
         if ($queryResult->num_rows > 0) {
             while($row = $queryResult->fetch_assoc()) {
                 array_push($idArray, $row["id"]);
             }
+        } else {
+            return -1;
         }
         return $idArray;
     }
@@ -47,15 +48,35 @@
     }   
     function getColumnOfRowWithIdInTableWithCondition($columnName, $id, $tableName, $conditionString) {
         $sql = "SELECT $columnName FROM $tableName WHERE id = '$id' AND $conditionString";
-        $connection = connectDb();
-        $queryResult = $connection->query($sql);
+        $queryResult = sendQuery($sql);
         if ($queryResult->num_rows == 1) {
             while($row = $queryResult->fetch_assoc()) {
                 $result = $row["$columnName"];
             }
         } else {
+            echo $sql;
             $result = "Error: not found";
         }
         return $result;
+    }
+
+    function getHighstIdOfTable($tableName) {
+        $sql = "SELECT MAX(id) FROM $tableName";
+        $result = sendQuery($sql);
+        if ($result->num_rows == 1) {
+            while($row = $result->fetch_assoc()) {
+                return array_pop($row);
+            }
+        } 
+    }
+
+    function sendQuery($queryString) {
+        $connection = connectDb();
+        return $connection->query($queryString);
+    }
+
+    function delteObjectWithIdFromTable($id, $tableName) {
+        $sql = "DELETE FROM $tableName WHERE id = $id";
+        sendQuery($sql);
     }
  ?>

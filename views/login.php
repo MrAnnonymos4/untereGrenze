@@ -8,10 +8,12 @@
 		//echo "Password: $password <br />";
 	}
 	if (isset($email) && isset($password)) {
-		
-		include("../model/user.php");
+        
+        include_once("../model/user.php");
+        echo "user.php imported";
         $result = checkUserMailAndPassword($email, $password);
-		if ($result > -1) {
+        echo "test";
+        if ($result > -1) {
 			$userId = $result;
 			$_SESSION["userId"] = $userId;
 			echo "Weiterleitung funktioniert nicht";

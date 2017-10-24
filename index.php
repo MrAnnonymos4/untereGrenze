@@ -2,11 +2,24 @@
     session_start();
     include_once("database/databaseConnection.php");
     echo("userId = " . $_SESSION["userId"] . "<br />");
+    $userId = $_SESSION["userId"];
 	if(!isset($_SESSION['userId']) || empty($_SESSION['userId'])) {
         echo "<a href='views/login.php'>please log in</a>";
         header("Location: views/login.php");
 		exit();
-	}
+    }
+    if (isset($_GET["deleteTask"])) {
+        require_once("model/task.php");
+        deleteTaskWithId($_GET["deleteTask"]);
+    }
+    if (isset($_GET["taskId"])) {
+        $taskId = $_GET["taskId"];
+        $taskName = $_POST["taskName"];
+        $taskType = $_POST["taskType"];
+        $unit = $_POST["unit"];
+        require_once("model/task.php");
+        saveTask($taskId, $taskName, $taskType, $unit);
+    }
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -53,7 +66,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="index.php">
                     <img src="img/unteregrenze.png" alt="" height="50px">
                 </a>
             </div>
@@ -91,6 +104,7 @@
             <div class="col-md-12">
                 <h1>Planning Poker Nerds</h1>
                 <p>Dies ist das Planning Poker vong dem krassen Nerds, leider kann nur einer vong ums Programmieren. Deutsch ist auch nicht unsere Stärk, mehr so Vong Spracke.</p>
+                <a class="btn btn-primary" href="views/startGame.php">Spiel erstellen</a>
             </div>
             <!-- /.col-md-4 -->
         </div>
@@ -109,17 +123,14 @@
                         <th>Status</th>
                     </tr>
                     <?php
-                        
                         require_once("model/task.php");
                         $theIds = getAllIdsOfTable("task");
                         foreach($theIds AS $eachId) {
-                            
                             $taskName = nameOfTaskWithId($eachId);
                             $creatorName = creatorNameOfTaskWithId($eachId);
-                            $statusName = statusNameForTaskWithId($eachId);;
-
+                            $statusName = statusNameForTaskWithId($eachId);
                             echo "<tr onclick=\"window.document.location='#'\">
-                                <td><a href='google.de'>$taskName</a></td>
+                                <td><a href='views/startGame.php?taskId=$eachId'>$taskName</a></td>
                                 <td>$creatorName</td>
                                 <td>$statusName</td>
                             </tr>";
@@ -129,31 +140,24 @@
                 <!-- /.col-md-4 -->
             </div>
             <!-- /.row -->
-                    <div class="row">
-            <h2>Ihre Einladungen:</h2>
+            <div class="row">
+            <h2>Offene Votes:</h2>
             <p>Das ist die Tabelle die Ihnen anzeigt welche Spieler sie eingeladen haben.</p>
             <table id="table" class="table table-striped">
                 <tr>
                     <th>Name</th>
                     <th>Projektleiter</th>
-                    <th>Status</th>
                 </tr>
                 <?php
+                    require_once("model/user.php");
                     require_once("model/invitation.php");
-                    $theIds = getAllIdsOfTable("invitation");
+                    $theIds = allInvitationIdsForUserWithId($userId);
                     foreach ($theIds AS $eachId) {
                         $taskName = taskNameOfInivitationWithId($eachId);
                         $creatorName = creatorNameOfInvitationWithId($eachId);
-                        $statusName = statusNameForInvitationWithId($eachId);
-                        if ($statusNumber == 0) {
-                            $statusHtmlString = "<button class='btn btn-success'>annehmen</button><button class='btn btn-danger'>ablehnen</button>";
-                        } else {
-                            $statusHtmlString = statusNumberForInvitationWithId($eachId);
-                        }
                         echo "<tr>
-                            <td>$taskName</td>
+                            <td><a href='views/startGame.php?taskId=$eachId'>$taskName</a></td>
                             <td>$creatorName</td>
-                            <td>$statusHtmlString</td>
                         </tr>";
                     }
                 ?>
