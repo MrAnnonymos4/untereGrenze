@@ -1,5 +1,5 @@
 <?php
-//Returns task status by name
+//Returns textual description for taskID
     function statusNameForTaskWithId($taskId) {
         include_once("../database/databaseConnection.php");
         
@@ -13,34 +13,34 @@
         $theStatusNumber = getColumnOfRowWithIdInTable("status", $taskId, "task");
         return $theStatusArray[$theStatusNumber];
     }
- //Returns task creator ID   
+ //Returns creatorID for taskID  
     function creatorIdOfTaskWithId($taskId) {
         require_once("user.php");
         include_once("../database/databaseConnection.php");
         return getColumnOfRowWithIdInTable("creatorId", $taskId, "task");
     }
-//Returns task creator name
+//Returns creatorname for taskID
     function creatorNameOfTaskWithId($taskId) {
         require_once("user.php");
         $ownerId = creatorIdOfTaskWithId($taskId);
         return nameOfUserWithId($ownerId);
     }
-//Returns name of task
+//Returns taskname for taskID
     function nameOfTaskWithId($taskId) {
         include_once("../database/databaseConnection.php");
         return getColumnOfRowWithIdInTable("name",$taskId, "task");
     }
-//Returns task type by type ID
+//Returns task typeID for taskID
     function typeIdOfTaskWithId($taskId) {
         include_once("../database/databaseConnection.php");
         return getColumnOfRowWithIdInTable("type",$taskId, "task");
     }
-//Returns task unit by unit ID
+//Returns task unitID for taskID
     function unitIdOfTaskWithId($taskId) {
         include_once("../database/databaseConnection.php");
         return getColumnOfRowWithIdInTable("unit",$taskId, "task");
     }
-//Returns all invitations by ID for one task
+//Returns all linked invitationIDs for taskID
     function allInvitationIdsForTaskWithId($taskId) {
         include_once("../database/databaseConnection.php");
         return getAllIdsOfTableWithCondition("invitation", "taskId = '$taskId'");
