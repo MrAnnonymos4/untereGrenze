@@ -4,6 +4,7 @@
         session_start();
         include_once("../database/databaseConnection.php");
         include_once("../model/task.php");
+        include_once("../model/invitation.php");
         $taskId = $_GET["taskId"];
         if(!isset($_SESSION['userId']) || empty($_SESSION['userId'])) {
             header("Location: login.php");
@@ -31,8 +32,7 @@
         <script src="task.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-        <!-- Custom CSS -->
-        
+        <!-- Template CSS -->
         <link href="../css/small-business.css" rel="stylesheet">
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -148,7 +148,6 @@
                                 ?>
                             </tr>
                             <?php
-                                
                                 $theIds = getAllIdsOfTable("user");
                                 require_once("../model/user.php");
                                 foreach($theIds AS $eachId) {
@@ -157,18 +156,21 @@
                                     $mail = mailOfUserWithId($eachId);
                                     echo "<td>$name</td><td>$mail</td>";
                                     if (existInvitationForUserIdAndTaskId($eachId, $taskId)) {
-                                        $vote = invitationVoteForUserIdAndTaskId($eachId, $taskId);
-                                        if ($vote >= 0) {
-                                            echo "<td>$vote</td>";
+                                        
+                                        $invitationId = invitationForUserIdAndTaskId($userId, $taskId);
+                                        
+                                        $vote = voteForInvitationWithId($invitationId);
+                                        echo "test";
+                                        if ($vote < 0) {
+                                            $vote = "";
+                                        }
+                                        if ($eachId == $userId) {
+                                            echo "<td>
+                                                    <form><input type='number' id='voteInput' value='$vote' style='width: 75px'/></form>
+                                                    <button class='btn btn-info' onclick='setVote($invitationId)' type='button'>Vote abgeben</button>
+                                                </td>";
                                         } else {
-                                            if ($eachId == $userId) {
-                                                echo "<td>
-                                                        <form><input type='number' style='width: 75px'/></form>
-                                                        <button class='btn btn-info' href='#'>Vote abgeben</button>
-                                                    </td>";
-                                            } else {
-                                                echo "<td>eingeladen</td>";
-                                            }     
+                                            echo "<td>eingeladen (Vote: $vote)</td>";
                                         }
                                         
                                     } else {
@@ -187,15 +189,12 @@
                             ?>
                         </tbody>
                     </table>
-                    <div style="padding: 5px">
+                    <div>
                         <?php
                             if (creatorIdOfTaskWithId($taskId) == $userId) {
-                                echo "<button type='submit' class='btn btn-primary'>Speichern!</button>";
-                                echo "<a type='submit' class='btn btn-danger' href='../index.php?deleteTask=$taskId'>Löschen!</a>";
-                            }
-                            $invitationVote = invitationVoteForUserIdAndTaskId($userId, $taskId);
-                            if (existInvitationForUserIdAndTaskId($userId, $taskId)  && invitationVoteForUserIdAndTaskId($userId, $taskId) == -1) {
-                                echo "<button type='button' class='btn btn-info'>Abstimmen!</button>";
+                                echo "<button type='submit' class='btn btn-primary'>Speichern</button>";
+                                echo "<a type='submit' class='btn btn-danger' href='../index.php?deleteTask=$taskId'>Löschen</a>";
+                                echo "<button type='button' class='btn btn-warning' onclick='closeTask($taskId)'>Spiel schließen</button>";
                             }
                         ?>
                     </div>
@@ -215,10 +214,10 @@
         <!-- /.container -->
 
         <!-- jQuery -->
-        <script src="js/jquery.js"></script>
+        <script src="../js/jquery.js"></script>
 
         <!-- Bootstrap Core JavaScript -->
-        <script src="js/bootstrap.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
 
     </body>
 

@@ -6,6 +6,14 @@ function sendInvitation(taskId, userId) {
     $("#inviteButton" + userId).remove();
 }
 
+function setVote(voteId) {
+    let voteValue = $("#voteInput").val();
+    getRequest("vote.php?invitationId=" + voteId + "&value=" + voteValue);
+}
+function closeTask(taskId) {
+    getRequest("closeGame.php?taskId=" + taskId);
+}
+
 
 
 function getRequest(queryString, callbackFunction) {
