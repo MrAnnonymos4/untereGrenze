@@ -20,23 +20,6 @@
         return creatorNameOfTaskWithId($theTaskId);
     }
 
-    //Returns textual status description for invitation ID
-    function statusNameForInvitationWithId($id) {
-        include_once("../database/databaseConnection.php");
-        $theStatusArray = array(
-            0 => "eingeladen",
-            1 => "angenommen",
-            2 => "abgelehnt",
-        );
-        return $theStatusArray[statusNumberForInvitationWithId($id)];
-    }
-
-    //Returns numerical status description for invitation ID
-    function statusNumberForInvitationWithId($id) {
-        include_once("../database/databaseConnection.php");
-        return getColumnOfRowWithIdInTable("status", $id, "invitation");
-    }
-
     //Returns vote for invitation ID
     function voteForInvitationWithId($id) {
         include_once("../database/databaseConnection.php");

@@ -11,11 +11,14 @@ function setVote(voteId) {
     getRequest("vote.php?invitationId=" + voteId + "&value=" + voteValue);
 }
 function closeTask(taskId) {
-    getRequest("closeGame.php?taskId=" + taskId);
+    getRequest("closeGame.php?taskId=" + taskId, taskClosed);
+}
+function taskClosed(result) {
+    alert("Result: " + result);
 }
 
 
-
+//AJAX-API: Create a request with the given string and call the callbackFunction with the response body if there is a callbackFunction set
 function getRequest(queryString, callbackFunction) {
     var xmlhttp = new XMLHttpRequest();
     let callback = arguments.length == 2;

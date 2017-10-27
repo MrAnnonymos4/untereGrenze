@@ -14,21 +14,25 @@
         }
         return $result;
     }
+
     //Returns username for userID
     function nameOfUserWithId($userId) {
         include_once("../database/databaseConnection.php");
         return getColumnOfRowWithIdInTable("name", $userId, "user");
     }
+
     //Returns usermail for userID
     function mailOfUserWithId($userId) {
         include_once("../database/databaseConnection.php");
         return getColumnOfRowWithIdInTable("email", $userId, "user");
     }
+
     //Returns all invitations for userID
     function allInvitationIdsForUserWithId($userId) {
         include_once("../database/databaseConnection.php");
         return getAllIdsOfTableWithCondition("invitation", "playerId = '$userId'");
     }
+
     //Checks for linked task for userID. Returns result by boolean
     function existInvitationForUserIdAndTaskId($userId, $taskId) {
         $theInvitationId = invitationForUserIdAndTaskId($userId, $taskId);
@@ -41,11 +45,5 @@
         $invitations = getAllIdsOfTableWithCondition("invitation", "playerId = '$userId' AND taskId = '$taskId'");
         $invitationId = array_pop($invitations);
         return $invitationId;
-    }
-    //Returns invitationvote for userID and taskID
-    function invitationVoteForUserIdAndTaskId($userId, $taskId) {
-        include_once("invitation.php");
-        $invitationId = invitationForUserIdAndTaskId($userId, $taskId);
-        return voteForInvitationWithId($invitationId);
     }
 ?>

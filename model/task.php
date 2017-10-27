@@ -2,14 +2,17 @@
 
     //Returns textual description for taskID
     function statusNameForTaskWithId($taskId) {
-        include_once("../database/databaseConnection.php");
-        
         $theStatusArray = array(
             0 => "offen",
             1 => "geschlossen"
         );
-        $theStatusNumber = getColumnOfRowWithIdInTable("status", $taskId, "task");
+        $theStatusNumber = getStatusNumberOfTaskWithId($taskId);
         return $theStatusArray[$theStatusNumber];
+    }
+
+    function getStatusNumberOfTaskWithId($taskId) {
+        include_once("../database/databaseConnection.php");
+        return getColumnOfRowWithIdInTable("status", $taskId, "task");
     }
 
     //Returns creatorID for taskID  
@@ -50,11 +53,44 @@
         return getAllIdsOfTableWithCondition("invitation", "taskId = '$taskId'");
     }
 
+    function resultOfTaskWithId($taskId) {
+        include_once("../database/databaseConnection.php");
+        return getColumnOfRowWithIdInTable("result",$taskId, "task");
+    }
+
+    //Closes the task with the given id
     function closeTaskWithId($taskId) {
         include_once("../database/databaseConnection.php");
-        $sql = "UPDATE task SET status = 1 WHERE id = $taskId";
-        echo "$sql";
+        $taskType = typeIdOfTaskWithId($taskId);
+        $invitationIds = allInvitationIdsForTaskWithId($taskId);
+        $votes = array();
+        include_once("invitation.php");
+        foreach ($invitationIds AS $eachVoteId) {
+            $vote = voteForInvitationWithId($eachVoteId);
+            if ($vote >= 0) {
+                array_push($votes, $vote);
+            }
+        }
+        //Median
+        if ($taskType == 0) {
+            $max = max($votes);
+            $min = min($votes);
+            $result = ($max + $min) / 2;
+        } else {
+            $sum = 0;
+            foreach ($votes AS $eachVote) {
+                $sum += $eachVote;
+            }
+            $result = $sum / count($votes);
+        }
+        $sql = "UPDATE task SET status = 1, result = $result WHERE id = $taskId";
         sendQuery($sql);
+        echo $result;
+    }
+
+    //Answers whether the task with the given id is open or not
+    function isOpen($taskId) {
+        return getStatusNumberOfTaskWithId($taskId) == 0;
     }
 
 
@@ -69,9 +105,9 @@
     //Deletes a task
     function deleteTaskWithId($taskId) {
         include_once("../database/databaseConnection.php");
-        delteObjectWithIdFromTable($taskId, "task");
+        deleteObjectWithIdFromTable($taskId, "task");
         foreach (allInvitationIdsForTaskWithId($taskId) AS $eachInvitationId) {
-            delteObjectWithIdFromTable($eachInvitationId, "invitation");
+            deleteObjectWithIdFromTable($eachInvitationId, "invitation");
         }
     }
 

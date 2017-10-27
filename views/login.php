@@ -5,14 +5,11 @@
 	}
 	if (isset($_POST["password"])) {
 		$password = $_POST["password"];
-		//echo "Password: $password <br />";
 	}
 	if (isset($email) && isset($password)) {
         
         include_once("../model/user.php");
-        echo "user.php imported";
         $result = checkUserMailAndPassword($email, $password);
-        echo "test";
         if ($result > -1) {
 			$userId = $result;
 			$_SESSION["userId"] = $userId;

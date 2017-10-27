@@ -1,7 +1,6 @@
 ﻿<?php
     session_start();
     include_once("database/databaseConnection.php");
-    echo("userId = " . $_SESSION["userId"] . "<br />");
     $userId = $_SESSION["userId"];
 	if(!isset($_SESSION['userId']) || empty($_SESSION['userId'])) {
         echo "<a href='views/login.php'>please log in</a>";
@@ -72,22 +71,8 @@
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="#">Nicht Abgeschlossene Spiele</a>
-                    </li>
-                    
-                    <li>
-                        <a href="#">Einladungen</a>
-                    </li>
-                    
-                    <li>
-                        <a href="#">Abgeschlossene Spiele</a>
-                    </li>
-                    
+                <ul class="nav navbar-nav" style="float: right">
                     <li><a class="btn btn-default" href="loggedOut.php">Abmelden</a></li>
-                    
-
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -114,13 +99,14 @@
         <hr>
         <!-- Content Row -->
         <div class="row">
-            <h2>Nicht Abgeschlossene Spiele</h2>
+            <h2>Spiele</h2>
             <p>Hier können Sie die Spiele sehen die sie bereits angenommen haben, aber welche noch nicht abgeschlossen sind.</p>
                 <table id="table" class="table table-striped">
                     <tr>
                         <th>Name</th>
                         <th>Projektleiter</th>
                         <th>Status</th>
+                        <th>Ergebnis</th>
                     </tr>
                     <?php
                         require_once("model/task.php");
@@ -129,10 +115,16 @@
                             $taskName = nameOfTaskWithId($eachId);
                             $creatorName = creatorNameOfTaskWithId($eachId);
                             $statusName = statusNameForTaskWithId($eachId);
+                            if (isOpen($eachId)) {
+                                $result = "-";
+                            } else {
+                                $result = resultOfTaskWithId($eachId);
+                            }
                             echo "<tr onclick=\"window.document.location='#'\">
                                 <td><a href='views/startGame.php?taskId=$eachId'>$taskName</a></td>
                                 <td>$creatorName</td>
                                 <td>$statusName</td>
+                                <td>$result</td>
                             </tr>";
                         }
                     ?>
@@ -153,12 +145,15 @@
                     require_once("model/invitation.php");
                     $theIds = allInvitationIdsForUserWithId($userId);
                     foreach ($theIds AS $eachId) {
+                        $eachTaskId = taskIdOfInivitationWithId($eachId);
                         $taskName = taskNameOfInivitationWithId($eachId);
                         $creatorName = creatorNameOfInvitationWithId($eachId);
-                        echo "<tr>
-                            <td><a href='views/startGame.php?taskId=$eachId'>$taskName</a></td>
-                            <td>$creatorName</td>
-                        </tr>";
+                        if (isOpen($eachTaskId)) {
+                            echo "<tr>
+                                <td><a href='views/startGame.php?taskId=$eachTaskId'>$taskName</a></td>
+                                <td>$creatorName</td>
+                            </tr>";
+                        }
                     }
                 ?>
             </table>

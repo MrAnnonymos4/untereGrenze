@@ -16,13 +16,6 @@
         return $connection;
     }
 
-    function getConnection() {
-        if (!isset($connection)) {
-            connectDb();
-        }
-        return $connection;
-    }
-
 
     //MySQL-API
     function getAllIdsOfTable($tableName) {
@@ -60,6 +53,7 @@
         return $result;
     }
 
+    //Answer the highest id of entries in the given table
     function getHighstIdOfTable($tableName) {
         $sql = "SELECT MAX(id) FROM $tableName";
         $result = sendQuery($sql);
@@ -70,12 +64,14 @@
         } 
     }
 
+    //Send the give sql-query to the database
     function sendQuery($queryString) {
         $connection = connectDb();
         return $connection->query($queryString);
     }
 
-    function delteObjectWithIdFromTable($id, $tableName) {
+    //Delete the entry with the given id from the given table
+    function deleteObjectWithIdFromTable($id, $tableName) {
         $sql = "DELETE FROM $tableName WHERE id = $id";
         sendQuery($sql);
     }

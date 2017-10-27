@@ -29,6 +29,7 @@
                 $result = $connection->query($sql);
                 $_SESSION["id"] = $connection->insert_id;
                 header("Location: ../index.html");
+                echo "<a href='../index.php'>Zur Startseite</a>";
                 die();
             } else {
                 $showEmailError = true;

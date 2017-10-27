@@ -5,6 +5,9 @@
         include_once("../database/databaseConnection.php");
         include_once("../model/task.php");
         include_once("../model/invitation.php");
+        require_once("../model/user.php");
+        require_once("../model/unit.php");
+        require_once("../model/taskType.php");
         $taskId = $_GET["taskId"];
         if(!isset($_SESSION['userId']) || empty($_SESSION['userId'])) {
             header("Location: login.php");
@@ -15,6 +18,8 @@
         if (!isset($taskId)) {
             $taskId = addTask("Neuer Task", $userId);
         }
+        $isOpen = isOpen($taskId);
+        $isOwner = creatorIdOfTaskWithId($taskId) == $userId;
         
     ?>
 
@@ -34,13 +39,6 @@
 
         <!-- Template CSS -->
         <link href="../css/small-business.css" rel="stylesheet">
-
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
 
     </head>
 
@@ -63,7 +61,7 @@
                 </div>
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
+                    <ul class="nav navbar-nav" style="float: right">
                         <li><a class="btn btn-default" href="loggedOut.php">Abmelden</a></li>
                     </ul>
                 </div>
@@ -80,8 +78,6 @@
                 <!-- /.col-md-8 -->
                 <div class="col-md-12">
                     <h1>Planning Poker Nerds</h1>
-                    <p>Auf dieser Seite können Sie Ihre Spiele erstellen. Versuchen Sie es:</p>
-                    <br>
                 </div>
                 <!-- /.col-md-4 -->
             </div>
@@ -93,24 +89,28 @@
                     <div class="form-group">
                         <label for="taskName">Name des Spiels</label>
                         <?php
+                            $disabledString = "";
+                            if (!$isOwner) {
+                                $disabledString = "disabled";
+                            }
                             $taskName = nameOfTaskWithId($taskId);
-                            echo "<input type='text' class='form-control' id='game' name='taskName' value='$taskName'>";
+                            echo "<input type='text' class='form-control' id='game' name='taskName' value='$taskName' $disabledString>";
                         ?>
                     </div>
                     
                     <div class="form-group">
-                        <label for="sel1">Spieltyp:</label>
+                        <label for="gametype">Spieltyp:</label>
                         <select class="form-control" id="gametype" name="taskType">
                             <?php
                                 $theIds = getAllIdsOfTable("taskType");
-                                require_once("../model/taskType.php");
+                                
                                 $typeId = typeIdOfTaskWithId($taskId);
                                 foreach ($theIds AS $eachId) {
                                     $typeName = nameOfTaskTypeWithId($eachId);
                                     if ($eachId == $typeId) {
-                                        echo "<option value='$eachId' selected>$typeName</option>";
+                                        echo "<option value='$eachId' selected $disabledString>$typeName</option>";
                                     } else {
-                                        echo "<option value='$eachId'>$typeName</option>";
+                                        echo "<option value='$eachId' $disabledString>$typeName</option>";
                                     }
                                 }
                             ?>
@@ -119,14 +119,13 @@
                     <div>
                         <?php
                             $theIds = getAllIdsOfTable("unit");
-                            require_once("../model/unit.php");
                             $unitId = unitIdOfTaskWithId($taskId);
                             foreach($theIds AS $eachId) {
                                 $unitName = nameOfUnitWithId($eachId);
                                 if ($unitId == $eachId) {
-                                    echo "<label class='radio-inline'><input type='radio' name='unit' value='$eachId' checked='checked'>$unitName</label>";
+                                    echo "<label class='radio-inline'><input type='radio' name='unit' value='$eachId' checked='checked' $disabledString>$unitName</label>";
                                 } else {
-                                    echo "<label class='radio-inline'><input type='radio' name='unit' value='$eachId'>$unitName</label>";
+                                    echo "<label class='radio-inline'><input type='radio' name='unit' value='$eachId' $disabledString>$unitName</label>";
                                 }
                                 
                             }
@@ -149,34 +148,37 @@
                             </tr>
                             <?php
                                 $theIds = getAllIdsOfTable("user");
-                                require_once("../model/user.php");
+                                
                                 foreach($theIds AS $eachId) {
                                     echo "<tr>";
                                     $name = nameOfUserWithId($eachId);
                                     $mail = mailOfUserWithId($eachId);
                                     echo "<td>$name</td><td>$mail</td>";
                                     if (existInvitationForUserIdAndTaskId($eachId, $taskId)) {
-                                        
-                                        $invitationId = invitationForUserIdAndTaskId($userId, $taskId);
-                                        
+                                        $invitationId = invitationForUserIdAndTaskId($eachId, $taskId);
                                         $vote = voteForInvitationWithId($invitationId);
-                                        echo "test";
                                         if ($vote < 0) {
                                             $vote = "";
                                         }
                                         if ($eachId == $userId) {
-                                            echo "<td>
+                                            if ($isOpen) {
+                                                echo "<td>
                                                     <form><input type='number' id='voteInput' value='$vote' style='width: 75px'/></form>
                                                     <button class='btn btn-info' onclick='setVote($invitationId)' type='button'>Vote abgeben</button>
                                                 </td>";
+                                            } else {
+                                                echo "<td>Vote: $vote</td>";
+                                            }
                                         } else {
-                                            echo "<td>eingeladen (Vote: $vote)</td>";
+                                            echo "<td>Vote: $vote</td>";
                                         }
                                         
                                     } else {
                                         $ownerId = creatorIdOfTaskWithId($taskId);
-                                        if ($ownerId == $userId) {
+                                        if ($isOwner && $isOpen) {
                                             echo "<td><button id='inviteButton$eachId' class='btn btn-success' onclick='sendInvitation($taskId, $eachId);' type='button'>Einladen</button></td>";
+                                        } elseif ($ownerId == $eachId) {
+                                            echo "<td>Ersteller</td>";
                                         } elseif ($ownerId == $eachId){ 
                                             echo "<td>Inhaber</td>";
                                         }
@@ -191,10 +193,12 @@
                     </table>
                     <div>
                         <?php
-                            if (creatorIdOfTaskWithId($taskId) == $userId) {
+                            if ($isOwner) {
                                 echo "<button type='submit' class='btn btn-primary'>Speichern</button>";
                                 echo "<a type='submit' class='btn btn-danger' href='../index.php?deleteTask=$taskId'>Löschen</a>";
-                                echo "<button type='button' class='btn btn-warning' onclick='closeTask($taskId)'>Spiel schließen</button>";
+                                if ($isOpen) {
+                                    echo "<button type='button' class='btn btn-warning' onclick='closeTask($taskId)'>Spiel schließen</button>";
+                                }
                             }
                         ?>
                     </div>
