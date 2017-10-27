@@ -77,7 +77,7 @@
             <div class="row">
                 <!-- /.col-md-8 -->
                 <div class="col-md-12">
-                    <h1>Planning Poker Nerds</h1>
+                    <h1>Planning Poker</h1>
                 </div>
                 <!-- /.col-md-4 -->
             </div>
@@ -116,7 +116,7 @@
                             ?>
                         </select>
                     </div>
-                    <div>
+                    <div class="form-group">
                         <?php
                             $theIds = getAllIdsOfTable("unit");
                             $unitId = unitIdOfTaskWithId($taskId);
@@ -126,8 +126,15 @@
                                     echo "<label class='radio-inline'><input type='radio' name='unit' value='$eachId' checked='checked' $disabledString>$unitName</label>";
                                 } else {
                                     echo "<label class='radio-inline'><input type='radio' name='unit' value='$eachId' $disabledString>$unitName</label>";
-                                }
-                                
+                                }   
+                            }
+                        ?>
+                    </div>
+                    <div class="form-group">
+                        <?php
+                            if (!isOpen($taskId)) {
+                                $result = resultOfTaskWithId($taskId);
+                                echo "<p><strong>Ergebnis:</strong> $result</p>";
                             }
                         ?>
                     </div>

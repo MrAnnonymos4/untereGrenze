@@ -87,8 +87,7 @@
         <div class="row">
             <!-- /.col-md-8 -->
             <div class="col-md-12">
-                <h1>Planning Poker Nerds</h1>
-                <p>Dies ist das Planning Poker vong dem krassen Nerds, leider kann nur einer vong ums Programmieren. Deutsch ist auch nicht unsere Stärk, mehr so Vong Spracke.</p>
+                <h1>Planning Poker</h1>
                 <a class="btn btn-primary" href="views/startGame.php">Spiel erstellen</a>
             </div>
             <!-- /.col-md-4 -->
@@ -100,7 +99,7 @@
         <!-- Content Row -->
         <div class="row">
             <h2>Spiele</h2>
-            <p>Hier können Sie die Spiele sehen die sie bereits angenommen haben, aber welche noch nicht abgeschlossen sind.</p>
+            <p>Übersicht über alle Spiele</p>
                 <table id="table" class="table table-striped">
                     <tr>
                         <th>Name</th>
@@ -133,8 +132,8 @@
             </div>
             <!-- /.row -->
             <div class="row">
-            <h2>Offene Votes:</h2>
-            <p>Das ist die Tabelle die Ihnen anzeigt welche Spieler sie eingeladen haben.</p>
+            <h2>Offene Votes</h2>
+            <p>Spiele bei denen Sie Ihr Votum abgeben können</p>
             <table id="table" class="table table-striped">
                 <tr>
                     <th>Name</th>
