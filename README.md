@@ -1,2 +1,0 @@
-# untereGrenze
-Uni Projekt
