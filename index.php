@@ -93,70 +93,65 @@
             <!-- /.col-md-4 -->
         </div>
         <!-- /.row -->
-	</div>
-	<div class="container">
-        <hr>
-        <!-- Content Row -->
-        <div class="row">
-            <h2>Spiele</h2>
-            <p>Übersicht über alle Spiele</p>
-                <table id="table" class="table table-striped">
-                    <tr>
-                        <th>Name</th>
-                        <th>Projektleiter</th>
-                        <th>Status</th>
-                        <th>Ergebnis</th>
-                    </tr>
-                    <?php
-                        require_once("model/task.php");
-                        $theIds = getAllIdsOfTable("task");
-                        foreach($theIds AS $eachId) {
-                            $taskName = nameOfTaskWithId($eachId);
-                            $creatorName = creatorNameOfTaskWithId($eachId);
-                            $statusName = statusNameForTaskWithId($eachId);
-                            if (isOpen($eachId)) {
-                                $result = "-";
-                            } else {
-                                $result = resultOfTaskWithId($eachId);
-                            }
-                            echo "<tr onclick=\"window.document.location='#'\">
-                                <td><a href='views/startGame.php?taskId=$eachId'>$taskName</a></td>
-                                <td>$creatorName</td>
-                                <td>$statusName</td>
-                                <td>$result</td>
-                            </tr>";
-                        }
-                    ?>
-                </table>
-                <!-- /.col-md-4 -->
-            </div>
-            <!-- /.row -->
-            <div class="row">
-            <h2>Offene Votes</h2>
-            <p>Spiele bei denen Sie Ihr Votum abgeben können</p>
-            <table id="table" class="table table-striped">
+
+        <hr />
+        
+        <h2>Spiele</h2>
+        <p>Übersicht über alle Spiele</p>
+            <table class="table table-striped">
                 <tr>
                     <th>Name</th>
                     <th>Projektleiter</th>
+                    <th>Status</th>
+                    <th>Ergebnis</th>
                 </tr>
                 <?php
-                    require_once("model/user.php");
-                    require_once("model/invitation.php");
-                    $theIds = allInvitationIdsForUserWithId($userId);
-                    foreach ($theIds AS $eachId) {
-                        $eachTaskId = taskIdOfInivitationWithId($eachId);
-                        $taskName = taskNameOfInivitationWithId($eachId);
-                        $creatorName = creatorNameOfInvitationWithId($eachId);
-                        if (isOpen($eachTaskId)) {
-                            echo "<tr>
-                                <td><a href='views/startGame.php?taskId=$eachTaskId'>$taskName</a></td>
-                                <td>$creatorName</td>
-                            </tr>";
+                    require_once("model/task.php");
+                    $theIds = getAllIdsOfTable("task");
+                    foreach($theIds AS $eachId) {
+                        $taskName = nameOfTaskWithId($eachId);
+                        $creatorName = creatorNameOfTaskWithId($eachId);
+                        $statusName = statusNameForTaskWithId($eachId);
+                        if (isOpen($eachId)) {
+                            $result = "-";
+                        } else {
+                            $result = resultOfTaskWithId($eachId);
                         }
+                        echo "<tr onclick=\"window.document.location='#'\">
+                            <td><a href='views/startGame.php?taskId=$eachId'>$taskName</a></td>
+                            <td>$creatorName</td>
+                            <td>$statusName</td>
+                            <td>$result</td>
+                        </tr>";
                     }
                 ?>
             </table>
-        </div>
+            <!-- /.col-md-4 -->
+        <!-- /.row -->
+        <h2>Offene Votes</h2>
+        <p>Spiele bei denen Sie Ihr Votum abgeben können</p>
+        <table class="table table-striped">
+            <tr>
+                <th>Name</th>
+                <th>Projektleiter</th>
+            </tr>
+            <?php
+                require_once("model/user.php");
+                require_once("model/invitation.php");
+                $theIds = allInvitationIdsForUserWithId($userId);
+                foreach ($theIds AS $eachId) {
+                    $eachTaskId = taskIdOfInivitationWithId($eachId);
+                    $taskName = taskNameOfInivitationWithId($eachId);
+                    $creatorName = creatorNameOfInvitationWithId($eachId);
+                    if (isOpen($eachTaskId)) {
+                        echo "<tr>
+                            <td><a href='views/startGame.php?taskId=$eachTaskId'>$taskName</a></td>
+                            <td>$creatorName</td>
+                        </tr>";
+                    }
+                }
+            ?>
+        </table>
 
 
         <!-- Footer -->

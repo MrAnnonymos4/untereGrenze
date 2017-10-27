@@ -94,7 +94,7 @@
                                 $disabledString = "disabled";
                             }
                             $taskName = nameOfTaskWithId($taskId);
-                            echo "<input type='text' class='form-control' id='game' name='taskName' value='$taskName' $disabledString>";
+                            echo "<input type='text' class='form-control' id='taskName' name='taskName' value='$taskName' $disabledString>";
                         ?>
                     </div>
                     
@@ -209,8 +209,8 @@
                             }
                         ?>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
             <!-- Footer -->
             <footer>
                 <div class="row">
