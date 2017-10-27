@@ -1,0 +1,4 @@
+/*Override Boostrap core*/
+.navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+    margin-left: 0px !important;
+}

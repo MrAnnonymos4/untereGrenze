@@ -40,6 +40,13 @@
         <!-- Template CSS -->
         <link href="../css/small-business.css" rel="stylesheet">
 
+        <!-- Custom CSS adjustment -->
+        <link href="../css/custom.css" rel="stylesheet">
+
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="../img/PP_50.png" type="image/png" />
+        <link rel="icon" href="../img/PP_50.png" type="image/png" />
+
     </head>
 
     <body>
@@ -56,7 +63,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="../">
-                        <img src="../img/unteregrenze.png" alt="" height="50px">
+                        <img src="../img/PP_50.png" alt="" height="50px">
                     </a>
                 </div>
                 <!-- Collect the nav links, forms, and other content for toggling -->
